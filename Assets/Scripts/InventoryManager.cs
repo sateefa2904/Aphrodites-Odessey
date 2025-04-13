@@ -20,54 +20,45 @@ public class InventoryManager : MonoBehaviour
 
     private void Start()
     {
-        ChangeSelectedSlot(0);
+        ChangeSelectedSlot(0); // Start with the first slot selected
     }
 
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Alpha1))
-        {
             ChangeSelectedSlot(0);
-        }
-
         else if (Input.GetKeyDown(KeyCode.Alpha2))
-        {
             ChangeSelectedSlot(1);
-        }
-
         else if (Input.GetKeyDown(KeyCode.Alpha3))
-        {
             ChangeSelectedSlot(2);
-        }
-
         else if (Input.GetKeyDown(KeyCode.Alpha4))
-        {
             ChangeSelectedSlot(3);
-        }
-
-        else if (Input.GetKeyDown(KeyCode.Alpha4))
-        {
+        else if (Input.GetKeyDown(KeyCode.Alpha5))
             ChangeSelectedSlot(4);
-        }
     }
 
     void ChangeSelectedSlot(int newValue)
     {
-        if (selectedSlot >= 0)
+        if (selectedSlot >= 0 && selectedSlot < inventorySlots.Length)
         {
-            inventorySlots[selectedSlot].Deselect();
+            if (inventorySlots[selectedSlot] != null)
+                inventorySlots[selectedSlot].Deselect();
         }
-        inventorySlots[selectedSlot].Deselect();
 
-        inventorySlots[newValue].Select();
-        selectedSlot = newValue;
+        if (newValue >= 0 && newValue < inventorySlots.Length)
+        {
+            if (inventorySlots[newValue] != null)
+                inventorySlots[newValue].Select();
+            selectedSlot = newValue;
+        }
+        else
+        {
+            Debug.LogWarning("Invalid inventory slot index: " + newValue);
+        }
     }
 
-
-    // searched for free spots
     public bool AddItem(Item item)
     {
-        // Check if any slot has the same item with count lower than max
         for (int i = 0; i < inventorySlots.Length; i++)
         {
             InventorySlot slot = inventorySlots[i];
@@ -80,12 +71,11 @@ public class InventoryManager : MonoBehaviour
             }
         }
 
-
         for (int i = 0; i < inventorySlots.Length; i++)
         {
             InventorySlot slot = inventorySlots[i];
             DraggableItem itemInSlot = slot.GetComponentInChildren<DraggableItem>();
-            if (itemInSlot == null) // if no item in slot
+            if (itemInSlot == null)
             {
                 SpawnNewItem(item, slot);
                 return true;
@@ -95,7 +85,6 @@ public class InventoryManager : MonoBehaviour
         return false;
     }
 
-    // what kind of item spawned
     void SpawnNewItem(Item item, InventorySlot slot)
     {
         GameObject newItemGo = Instantiate(inventoryItemPrefab, slot.transform);
@@ -105,19 +94,21 @@ public class InventoryManager : MonoBehaviour
 
     public Item GetSelectedItem(bool use)
     {
+        if (selectedSlot < 0 || selectedSlot >= inventorySlots.Length)
+            return null;
+
         InventorySlot slot = inventorySlots[selectedSlot];
         DraggableItem itemInSlot = slot.GetComponentInChildren<DraggableItem>();
         if (itemInSlot != null)
         {
             Item item = itemInSlot.item;
-            if (use == true)
+            if (use)
             {
                 itemInSlot.count--;
                 if (itemInSlot.count <= 0)
                 {
                     Destroy(itemInSlot.gameObject);
                 }
-
                 else
                 {
                     itemInSlot.RefreshCount();

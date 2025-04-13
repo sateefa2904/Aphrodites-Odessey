@@ -7,30 +7,48 @@ using UnityEngine.UI;
 public class InventorySlot : MonoBehaviour, IDropHandler
 {
     public Image image;
-    public Color selectedColor, notSelectedColor;
+    public Color selectedColor;
+    public Color notSelectedColor;
 
-    public void Awake()
+    private void Awake()
     {
-        Deselect();
+        Deselect(); // Prevent console errors by applying default color
     }
 
     public void Select()
     {
-        image.color = selectedColor;
+        if (image != null)
+        {
+            image.color = selectedColor;
+        }
+        else
+        {
+            Debug.LogWarning($"{gameObject.name} is missing an Image reference in InventorySlot.");
+        }
     }
 
     public void Deselect()
     {
-        image.color = notSelectedColor;
+        if (image != null)
+        {
+            image.color = notSelectedColor;
+        }
+        else
+        {
+            Debug.LogWarning($"{gameObject.name} is missing an Image reference in InventorySlot.");
+        }
     }
 
     public void OnDrop(PointerEventData eventData)
     {
-        if (transform.childCount == 0)
+        if (transform.childCount == 0 && eventData.pointerDrag != null)
         {
             GameObject dropped = eventData.pointerDrag;
             DraggableItem draggableItem = dropped.GetComponent<DraggableItem>();
-            draggableItem.parentAfterDrag = transform;
+            if (draggableItem != null)
+            {
+                draggableItem.parentAfterDrag = transform;
+            }
         }
     }
 }

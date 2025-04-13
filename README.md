@@ -60,7 +60,7 @@ This was a group project that was abandoned, but I’m taking it over by myself 
 
 ## Screenshots
 
-
+![Alt text](image.png)
 
 ---
 

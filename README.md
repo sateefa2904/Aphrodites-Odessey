@@ -60,8 +60,8 @@ This was a group project that was abandoned, but I’m taking it over by myself 
 
 ## Screenshots
 
-![Alt text](image.png)
-![Alt text](image-1.png)
+![Main Menu Screenshot](screenshots/image.png)
+![Gameplay Screenshot](screenshots/image-1.png)
 
 ---
 
